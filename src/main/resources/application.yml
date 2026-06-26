@@ -1,0 +1,3 @@
+spring:
+  application:
+    name: CMS 1.0

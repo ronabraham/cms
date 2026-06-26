@@ -1,0 +1,1 @@
+create table posts(id uuid primary key, title varchar(255), created_date date,timestamp timestamp, summary varchar(255), detail varchar(1000));

@@ -1,0 +1,1 @@
+insert into posts values (RANDOM_UUID(),'test title',CURRENT_DATE(),CURRENT_TIMESTAMP(),'test summary','test detail');
