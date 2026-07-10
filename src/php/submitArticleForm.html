@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+	<title>CMS_0.1</title>
+</head>
+<style>
+#form_article{
+	border: 1px solid blue;
+	width : 50%;
+}
+h1{
+	margin-left: 20px;
+	text-decoration: underline;
+}
+label {
+	/*padding: 10px 65px 10px 20px;*/
+		margin-left: 20px;
+		display: inline-block;
+		width: 100px;
+
+}
+input {
+/*	padding: 10px 65px 10px 20px;*/
+/*	border : 1px solid red;*/
+}
+form {
+/*	padding: 10px 65px 10px 20px;*/
+	padding : 10px;
+}
+button {
+	margin-left: 20px;
+}
+textarea {
+/*		border : 1px solid red;*/
+}
+.row{
+/*	border : 1px solid black;*/
+}
+#titleinput,textarea {
+	width : 500px;
+}
+
+</style>
+<body>
+	<h1>Submit Article</h1>
+	<form id="form_article" action="submitArticle.php" method="POST">
+		<div class="row">
+			<label for="title">Title</label>
+			<input id="titleinput" name="title"></input>
+		</div>
+		<br>
+		<div class="row">
+			<label for="postSummary">Post Summary</label>
+			<textarea name="postSummary" type="textarea" rows="5" cols="30"></textarea>
+		</div>
+		<br>
+		<div class="row">
+			<label for="postDescription">Post Description</label>
+			<textarea name="postDescription"  rows="5" cols="30"></textarea>
+		</div>
+		<br>
+		<div class="row">
+			<button type="submit">Submit</button>
+		</div>
+	</form>
+</body>
+<html>

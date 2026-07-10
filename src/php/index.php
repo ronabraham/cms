@@ -5,11 +5,18 @@
 		  echo "<head><title>CMS 0.1</title></head>";
         ?>
         <?php
+            $mysqli = new mysqli("190.92.174.93:3306", "admin3", "9nK==VvLZTivQ*]N", "cmsdb_mysql");
+            //$mysqli = new mysqli("localhost:3306", "admin3", "admin", "cmsdb_mysql");
+
+            $result = $mysqli->query('select * from blog_articles');
+            echo "No of rows : $result->num_rows";
             $filename_article =  "http://localhost/cms/files/articles/july_articles.json";
             $filename = "http://localhost/cms/files/images/rajyaseva.png";
             $headers = get_headers($filename,true);
             $filesize = isset($headers['Content-Length']) ? (int) $headers['Content-Length'] : 0;
             $file = fopen($filename, "rb");
+
+            echo "mysqli->host_info : $mysqli->host_info" ;
 
             if(!$file){
              //   echo "<h6>Unable to open file</h6>";
