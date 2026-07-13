@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+<?php
+	//echo"<head><title>Form Submitted</title></head>";
+    openlog("cmsLogger", LOG_PID | LOG_PERROR, LOG_LOCAL0);
+	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+   // $mysqli = new mysqli("localhost:3306", "test", "test", "cms0_1");
+   // $link = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
+    function retrieve_article($id) {
+    	$link = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
+	    $statement = mysqli_prepare($link,"select title,created_datetime,summary,detailed from blog_articles where id = ?");
+	    mysqli_stmt_bind_param($statement,"s",$id);
+	    mysqli_stmt_execute($statement);
+	    mysqli_stmt_bind_result($statement,$title,$created_datetime,$summary,$detailed);
+	    mysqli_stmt_fetch($statement);
+	    syslog(LOG_INFO, "retrieved $title,$created_datetime");
+	    mysqli_close($link);
+	    return $summary;
+    }
+?>
+<head>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="author" content="Rajyaseva" />
+
+	<!-- Stylesheets
+	============================================= -->
+	<link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;500;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
+	<link rel="stylesheet" href="style.css" type="text/css" />
+	<link rel="stylesheet" href="css/dark.css" type="text/css" />
+
+	<link rel="stylesheet" href="css/font-icons.css" type="text/css" />
+	<link rel="stylesheet" href="css/animate.css" type="text/css" />
+	<link rel="stylesheet" href="css/magnific-popup.css" type="text/css" />
+
+	<link rel="stylesheet" href="css/custom.css" type="text/css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+	<!-- Blog Specific Stylesheet -->
+	<link rel="stylesheet" href="css/blog/css/fonts.css" type="text/css" />
+	<link rel="stylesheet" href="css/blog/blog.css" type="text/css" />
+
+	<link rel="stylesheet" href="css/colors.php?color=F39887" type="text/css" />
+
+	<!-- FavIcon -->
+    <link rel="shortcut icon" type="image/x-icon" href="files/images/blog/favicon.png">
+
+	<!-- Document Title
+	============================================= -->
+	<title>Rajyaseva - Blog</title>
+	
+	<style type="text/css">
+		.header-size-custom #logo img {
+		    height: auto;
+		}
+	</style>
+
+</head>
+
+<body class="stretched search-overlay">
+
+	<!-- Document Wrapper
+	============================================= -->
+	<div id="wrapper">
+
+		<!-- Header
+		============================================= -->
+		<header id="header" class="header-size-custom" data-sticky-shrink="false">
+			<div id="header-wrap">
+				<div class="container">
+					<div class="header-row justify-content-lg-between">
+
+						<!-- Logo
+						============================================= -->
+						<div id="logo" class="mx-lg-auto col-auto flex-column order-lg-2 px-0">
+							<a href="index.html" class="standard-logo" data-dark-logo="files/images/blog/rajyaseva-dark.png" data-mobile-logo="files/images/blog/mobile-rajyaseva.png"><img src="files/images/blog/rajyaseva.png" alt="Rajyaseva Logo"></a>
+							<a href="index.html" class="retina-logo" data-dark-logo="files/images/blog/rajyaseva-dark@2x.png" data-mobile-logo="files/images/blog/mobile-rajyaseva@2x.png"><img src="files/images/blog/rajyaseva@2x.png" alt="Rajyaseva Logo"></a>
+							<span class="divider divider-center date-today"><span class="divider-text"></span></span>
+						</div><!-- #logo end -->
+
+						<div class="col-auto col-lg-3 order-lg-1 d-none d-md-flex px-0">
+							<div class="social-icons">
+								<a href="#" class="social-icon si-rounded si-dark si-mini si-facebook">
+									<i class="icon-facebook"></i>
+									<i class="icon-facebook"></i>
+								</a>
+								<a href="http://twitter.com/Rajyaseva" class="social-icon si-rounded si-dark si-mini si-twitter" target="_blank">
+									<i class="icon-twitter"></i>
+									<i class="icon-twitter"></i>
+								</a>
+								<a href="#" class="social-icon si-rounded si-dark si-mini si-instagram">
+									<i class="icon-instagram"></i>
+									<i class="icon-instagram"></i>
+								</a>
+							</div>
+						</div>
+
+						<div class="header-misc col-auto col-lg-3 justify-content-lg-end ms-0 ms-sm-3 px-0">
+
+							<!-- Bookmark
+							============================================= -->
+
+							<!-- Top Search
+							============================================= -->
+							<div id="top-search" class="header-misc-icon">
+								<a href="#" id="top-search-trigger"><i class="icon-line-search"></i><i class="icon-line-cross"></i></a>
+							</div><!-- #top-search end -->
+
+						</div>
+
+						<div id="primary-menu-trigger">
+							<svg class="svg-trigger" viewBox="0 0 100 100"><path d="m 30,33 h 40 c 3.722839,0 7.5,3.126468 7.5,8.578427 0,5.451959 -2.727029,8.421573 -7.5,8.421573 h -20"></path><path d="m 30,50 h 40"></path><path d="m 70,67 h -40 c 0,0 -7.5,-0.802118 -7.5,-8.365747 0,-7.563629 7.5,-8.634253 7.5,-8.634253 h 20"></path></svg>
+						</div>
+
+					</div>
+				</div>
+
+				<div class="container">
+					<div class="header-row justify-content-lg-center header-border">
+
+						<!-- Primary Navigation
+						============================================= -->
+						<nav class="primary-menu with-arrows">
+
+							<ul class="menu-container justify-content-between">
+								<li class="menu-item current"><a class="menu-link" href="index.html"><div>Home</div></a></li>
+								<li class="menu-item"><a class="menu-link" href="startup.html"><div>Startup Ideas</div></a></li>
+								<li class="menu-item">
+									<a class="menu-link" href="#"><div>Politics</div></a>
+									<ul class="sub-menu-container" style="border-top: 2px solid #BC2020D1;">
+										<li class="menu-item" style="background-image: unset;">
+											<a class="menu-link" href="sidda1.html" style="background-image: unset;"><div>Siddaramaiah Speeches</div></a>
+										</li>
+										<!-- <li class="menu-item" style="background-image: unset;">
+											<a class="menu-link" href="#" style="background-image: unset;"><div>DBT</div></a>
+										</li> -->
+									</ul>
+								</li>
+								<li class="menu-item"><a class="menu-link" href="spirituality.html"><div>Spirituality</div></a></li>
+								<li class="menu-item"><a class="menu-link" href="music.html"><div>Music</div></a></li>
+								<li class="menu-item"><a class="menu-link" href="plays.html"><div>Plays</div></a></li>
+								<li class="menu-item"><a class="menu-link" href="games.html"><div>Games</div></a></li>
+								<li class="menu-item"><a class="menu-link" href="contact.html"><div>Contact</div></a></li>
+							</ul>
+
+						</nav><!-- #primary-menu end -->
+
+						<form class="top-search-form" action="search.html" method="get">
+							<input type="text" name="q" class="form-control" value="" placeholder="Type &amp; Hit Enter.." autocomplete="off">
+						</form>
+
+					</div>
+				</div>
+			</div>
+			<div class="header-wrap-clone"></div>
+
+		</header><!-- #header end -->
+
+		<!-- Content
+		============================================= -->
+		<section id="content">
+			<div class="content-wrap pt-5" style="overflow: visible;">
+
+				<div class="container">
+
+					<!-- Based On Your Reading History
+					============================================= -->
+					<div class="row border-between">
+
+						<!-- Left Side of Based On Your Reading History
+						============================================= -->
+						<div class="col-lg-8">
+							<!-- <h3 class="font-secondary fw-medium">Based On Study</h3> -->
+
+							<div class="row col-mb-50">
+								<article class="col-12">
+									<div class="row">
+										<div class="col-md-6 mb-0">
+											<a href="differentlyabled.html" class="entry-image">
+												<img src="files/images/blog/lists/1.jpg" alt="Image">
+											</a>
+										</div>
+										<div class="col-md-6">
+											<div class="entry-title mt-lg-0 mt-3">
+												<!--<div class="entry-categories"><a href="blog-categories.html"> Update - World</a></div> -->
+												<h3><a href="differentlyabled.html" class="color-underline stretched-link">The Plight of the Differently Abled. </a></h3>
+											</div>
+											<div class="entry-meta">
+												<ul>
+													<li><a href="#">April 1, 2023</a></li>
+												</ul>
+											</div>
+											<div class="entry-content">
+												<?php
+													$summary = retrieve_article(4);
+												echo "<p>$summary</p>";
+												?>
+											</div>
+										</div>
+									</div>
+								</article>
+
+								<article class="col-12">
+									<div class="row">
+										<div class="col-md-6 mb-0">
+											<a href="tailoring.html" class="entry-image">
+												<img src="files/images/blog/lists/2.jpg" alt="Image">
+											</a>
+										</div>
+										<div class="col-md-6">
+											<div class="entry-title mt-lg-0 mt-3">
+												<!--<div class="entry-categories"><a href="blog-categories.html">Food</a></div> -->
+												<h3><a href="tailoring.html" class="color-underline stretched-link">Tailoring as an Alternate Source of Income</a></h3>
+											</div>
+											<div class="entry-meta">
+												<ul>
+													<li><a href="#">April 18, 2023</a></li>
+												</ul>
+											</div>
+											<div class="entry-content">
+												<p>Considering the unemployment crisis that is raging in the country, it is always wise for the rural and semi-urban folk to pick up a skill that augments the income from the regular day job. Tailoring is a wise option for those adept at working with needle and cloth. A source of employment that they can work from home, at leisure and with dedication. Working with an established brand is not essential , though it helps.</p>
+											</div>
+										</div>
+									</div>
+								</article>
+
+								<article class="col-12">
+									<div class="row">
+										<div class="col-md-6 mb-0">
+											<a href="community-kitchens.html" class="entry-image">
+												<img src="files/images/blog/lists/3.jpg" alt="Image">
+											</a>
+										</div>
+										<div class="col-md-6">
+											<div class="entry-title mt-lg-0 mt-3">
+												<!-- <div class="entry-categories"><a href="blog-categories.html">Tech</a></div> -->
+												<h3><a href="community-kitchens.html" class="color-underline stretched-link">Community Kitchens - A Case Study in Class Mergers</a></h3>
+											</div>
+											<div class="entry-meta">
+												<ul>
+													<li><a href="#">April 25, 2023</a></li>
+												</ul>
+											</div>
+											<div class="entry-content">
+												<p>India is a country synonymous with various caste equations, stretching across all religions. The founding fathers of India had a dream to build a casteless society , and no one epitomises the dream of such a unified India than the father of the Indian constitution Dr. B R Ambedkar.</p>
+											</div>
+										</div>
+									</div>
+								</article>
+							</div>
+						</div>
+
+						<!-- Right Side of Based On Your Reading History - Sticky
+						============================================= -->
+						<div class="col-lg-4 mt-5 mt-lg-0 position-sticky h-100" style="top: 234px;">
+
+							<h3 class="font-secondary fw-medium">Recent Posts</h3>
+
+							<ul class="week-posts posts-sm row col-mb-30">
+								<li class="entry col-12">
+									<div class="grid-inner">
+										<div class="entry-title">
+											<h4><a href="community-kitchens.html" class="color-underline stretched-link">Community Kitchens - A Case study in Class Mergers</a></h4>
+										</div>
+										<div class="entry-meta">
+											<ul>
+												<li><a href="#">April 25, 2023</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+
+								<li class="entry col-12">
+									<div class="grid-inner">
+										<div class="entry-title">
+											<h4><a href="tailoring.html" class="color-underline stretched-link">Tailoring as an Alternate Source of Income.</a></h4>
+										</div>
+										<div class="entry-meta">
+											<ul>
+												<li><a href="#">April 18, 2023</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+
+								<li class="entry col-12">
+									<div class="grid-inner">
+										<div class="entry-title">
+											<h4><a href="spirituality.html" class="color-underline stretched-link">Are You in Love with Yourself.</a></h4>
+										</div>
+										<div class="entry-meta">
+											<ul>
+												<li><a href="#">April 10, 2023</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+
+								<li class="entry col-12">
+									<div class="grid-inner">
+										<div class="entry-title">
+											<h4><a href="differentlyabled.html" class="color-underline stretched-link">The Plight of the Differently Abled </a></h4>
+										</div>
+										<div class="entry-meta">
+											<ul>
+												<li><a href="#">April 1, 2023</a></li>
+											</ul>
+										</div>
+									</div>
+								</li>
+							</ul>
+
+							<div class="line line-sm"></div>
+
+						</div>
+					</div> <!-- Based On Your Reading History End -->
+				</div>
+
+				<div class="container">				
+
+					<!-- Subscribe Section
+					============================================= -->
+					<div class="section section-colored rounded px-4">
+						<div class="row justify-content-center align-items-center">
+							<div class="col-lg-5">
+								<h3 class="mb-4 mb-lg-0">Sign up for Updates &amp; Newsletters.</h3>
+							</div>
+							<div class="col-lg-6">
+								<div class="widget subscribe-widget" data-loader="button">
+
+									<div class="widget-subscribe-form-result"></div>
+									<form id="widget-subscribe-form" action="include/subscribe.php" method="post" class="mb-0 d-flex">
+										<input type="email" id="widget-subscribe-form-email" name="widget-subscribe-form-email" class="form-control form-control-lg not-dark required email" placeholder="Your Email Address">
+										<button class="button button-large button-black button-dark fw-medium ls0 button-rounded m-0 ms-3" type="submit">Subscribe Now</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div> <!-- Subscribe Section End -->
+				</div>
+
+			</div>
+		</section><!-- #content end -->
+
+		<!-- Footer
+		============================================= -->
+		
+
+		<!--  Footer End -->
+
+	</div><!-- #wrapper end -->
+
+	<!-- Go To Top
+	============================================= -->
+	<div id="gotoTop" class="icon-angle-up rounded-circle" style="left: 30px; right: auto;"></div>
+
+	<!-- JavaScripts
+	============================================= -->
+	<script src="js/jquery.js"></script>
+	<script src="js/plugins.min.js"></script>
+
+	<!-- Footer Scripts
+	============================================= -->
+	<script src="js/functions.js"></script>
+
+	<!-- ADD-ONS JS FILES -->
+	<script>
+		// Current Date
+		var weekday = ["Sun","Mon","Tues","Wed","Thurs","Fri","Sat"],
+			month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+			a = new Date();
+
+		jQuery('.divider-text').html( weekday[a.getDay()] + ', ' + month[a.getMonth()] + ' ' + a.getDate() + ', ' + a.getFullYear() );
+
+	</script>
+
+</body>
+</html>
