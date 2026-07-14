@@ -5,7 +5,6 @@
 		  echo "<head><title>CMS 0.1</title></head>";
         ?>
         <?php
-            $mysqli = new mysqli("190.92.174.93:3306", "admin3", "9nK==VvLZTivQ*]N", "cmsdb_mysql");
             //$mysqli = new mysqli("localhost:3306", "admin3", "admin", "cmsdb_mysql");
 
             $result = $mysqli->query('select * from blog_articles');
