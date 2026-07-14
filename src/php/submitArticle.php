@@ -19,7 +19,7 @@
     $insert_statement->bind_param('sssss',$uid,$title,$created_timestamp,$summary,$detail);
     $insert_statement->execute();
     echo "affected rows: ",$insert_statement->affected_rows;
-
+    echo "temp dir : ",sys_get_temp_dir();
     echo "<br>image : ",$_FILES['postImage']['name'];
     echo "<br>image name: ",$_FILES['postImage']['tmp_name'];
     echo "<br>image size: ",$_FILES['postImage']['size'];
@@ -36,8 +36,9 @@
         {   
           //  echo "<h6>image read successful</h6>";
             syslog(LOG_INFO,"image read successful : $filename");
-            $contents = fread($file,$filesize);
+            $contents = fread($file,$image_size);
         }
+     echo "image : ",$contents;   
 
     }
 ?>
