@@ -42,12 +42,16 @@ textarea {
 </style>
 <body>
 	<h1>Submit Article</h1>
-	<form id="form_article" action="submitArticle.php" method="POST">
+	<form id="form_article" action="submitArticle.php" method="POST" enctype="multipart/form-data">
 		<div class="row">
 			<label for="title">Title</label>
 			<input id="titleinput" name="title"></input>
 		</div>
 		<br>
+		<div class="row">
+			<label for="postImage">Post Image</label>
+			<input name="postImage" type="file" accept="image/jpeg, image/png"/>
+		</div>
 		<div class="row">
 			<label for="postSummary">Post Summary</label>
 			<textarea name="postSummary" type="textarea" rows="5" cols="30"></textarea>

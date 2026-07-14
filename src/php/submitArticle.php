@@ -20,18 +20,24 @@
     $insert_statement->execute();
     echo "affected rows: ",$insert_statement->affected_rows;
 
-    //$result = $mysqli->query("insert into blog_articles(id,title,created_datetime,summary,detailed) values (id,\$title,\$created_timestamp,\$summary,\$detail)");
-    //$result2 = $mysqli->query("select id,title,summary,detailed from blog_articles");
-    /*$rows = $result2->fetch_all(MYSQLI_ASSOC);
-    foreach($rows as $row){
-    	echo $row["title"] ,"<br>";
-    }
-    */
-    //echo $result;
+    echo "<br>image : ",$_FILES['postImage']['name'];
+    echo "<br>image name: ",$_FILES['postImage']['tmp_name'];
+    echo "<br>image size: ",$_FILES['postImage']['size'];
+    $image_size = $_FILES['postImage']['size'];
+    if($image_size>0) {
 
-	//echo 'title : ',($_POST['title']);
-	//echo "<br>";
-	//echo 'postsummary : ', $_POST['postSummary'];
-	//echo "<br>";
-	//echo 'postdetail : ', $_POST['postDescription'];
+        $filename = $_FILES['postImage']['tmp_name'];
+        $file = fopen($filename, "rb");
+
+        if(!$file){
+         //   echo "<h6>Unable to open file</h6>";
+            error_log("Unable to open file $filename");
+        } else
+        {   
+          //  echo "<h6>image read successful</h6>";
+            syslog(LOG_INFO,"image read successful : $filename");
+            $contents = fread($file,$filesize);
+        }
+
+    }
 ?>
