@@ -13,8 +13,6 @@
     echo $summary;
     echo $detail;
     
-    //$result = $mysqli->query('insert into blog_articles(id,title,created_datetime,summary,detailed)
-    // values (\'6a50e5b90e0e\',\'test title1\',\'2026-07-10 17:59:37\',\'summary\',\'detail\')');
     $insert_statement = $mysqli->prepare("insert into blog_articles(uid,title,created_datetime,summary,detailed) values (?,?,?,?,?)");
     $insert_statement->bind_param('sssss',$uid,$title,$created_timestamp,$summary,$detail);
     $insert_statement->execute();
@@ -37,8 +35,24 @@
           //  echo "<h6>image read successful</h6>";
             syslog(LOG_INFO,"image read successful : $filename");
             $contents = fread($file,$image_size);
+            $image_uid = uniqid();
+            $description = "test image description";
+            $image_type = 'section';
+            //$article_id = "1";
+            $select_statement = $mysqli->prepare("SELECT id from blog_articles where uid = ?");
+            $select_statement->bind_param('s',$uid);
+            $result = $select_statement->execute();
+            if($result){
+              $data = $select_statement->get_result();
+              $row = $data->fetch_assoc();
+              echo "row data : ",var_dump($row),$row['id'];
+              $article_id = $row['id'];
+              $insert_statement = $mysqli->prepare("insert into blog_images(uid,image_type,article_id,description,data) values (?,?,?,?,?)");
+              $insert_statement->bind_param('sssss',$image_uid,$image_type,$article_id,$description,$contents);
+              $insert_statement->execute();
+              echo "affected rows: ",$insert_statement->affected_rows;
+            }
         }
-     echo "image : ",$contents;   
 
     }
 ?>
