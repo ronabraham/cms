@@ -5,8 +5,46 @@
     openlog("cmsLogger", LOG_PID | LOG_PERROR, LOG_LOCAL0);
 	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
    // $mysqli = new mysqli("localhost:3306", "test", "test", "cms0_1");
-   // $link = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
+	class Article {
+		public $title ;
+		public $created_datetime;
+		public $summary;
+		public $detailed;
+	};
+
+	function retrieve_article_range() {
+    $link_main = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
+        $id_array = ["4","6","19","21"];
+        $statement = mysqli_prepare($link_main,"select id,title,created_datetime,summary,detailed from blog_articles where id in (?,?,?,?)");  
+        mysqli_stmt_bind_param($statement,"ssss",$id_array[0],$id_array[1],$id_array[2],$id_array[3]);
+        mysqli_stmt_execute($statement);
+        mysqli_stmt_bind_result($statement,$article_id,$title,$created_datetime,$summary,$detailed);
+        $assocArray = array();
+        while (mysqli_stmt_fetch($statement)) {
+  /*          echo "<h1>$title</h1>";
+            echo "<p>$summary</p>";
+            echo "<br>";
+            */
+
+           	syslog(LOG_INFO, "retrieved $article_id,$title,$created_datetime");  
+            $object = new stdClass();
+            $object->title = $title;
+            $object->summary = $summary;
+            $assocArray[$article_id] = $object;
+        }
+        return $assocArray;
+
+	}
     function retrieve_article($id) {
+    	
+    	$objectArray = retrieve_article_range();
+    	$article = new Article;
+ 	    $article->title = $objectArray[$id]->title;
+	    $article->summary = $objectArray[$id]->summary;		
+    	return $article;
+    	
+    	
+    	/*$article = new Article;
     	$link = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
 	    $statement = mysqli_prepare($link,"select title,created_datetime,summary,detailed from blog_articles where id = ?");
 	    mysqli_stmt_bind_param($statement,"s",$id);
@@ -14,8 +52,12 @@
 	    mysqli_stmt_bind_result($statement,$title,$created_datetime,$summary,$detailed);
 	    mysqli_stmt_fetch($statement);
 	    syslog(LOG_INFO, "retrieved $title,$created_datetime");
+	    $article->title = $title;
+	    $article->summary = $summary;
 	    mysqli_close($link);
-	    return $summary;
+	    return $article;
+	    */
+	    
     }
 ?>
 <head>
@@ -185,7 +227,13 @@
 										<div class="col-md-6">
 											<div class="entry-title mt-lg-0 mt-3">
 												<!--<div class="entry-categories"><a href="blog-categories.html"> Update - World</a></div> -->
-												<h3><a href="differentlyabled.html" class="color-underline stretched-link">The Plight of the Differently Abled. </a></h3>
+												<h3><a href="differentlyabled.html" class="color-underline stretched-link">
+
+												<?php
+													$article = retrieve_article(4);
+													echo "$article->title";
+												?>
+											</a></h3>
 											</div>
 											<div class="entry-meta">
 												<ul>
@@ -194,8 +242,8 @@
 											</div>
 											<div class="entry-content">
 												<?php
-													$summary = retrieve_article(4);
-												echo "<p>$summary</p>";
+													$article = retrieve_article(4);
+												echo "<p>$article->summary</p>";
 												?>
 											</div>
 										</div>
