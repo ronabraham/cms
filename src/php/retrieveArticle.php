@@ -9,7 +9,7 @@
     syslog(LOG_INFO, "id = $id");   
     error_log("id = $id") ;   
     if($id === "main"){
-        $id_array = ["4","6","19","21"];
+        $id_array = ["34","36","35","37"];
         $statement = mysqli_prepare($link,"select id,title,created_datetime,summary,detailed from blog_articles where id in (?,?,?,?)");  
         mysqli_stmt_bind_param($statement,"ssss",$id_array[0],$id_array[1],$id_array[2],$id_array[3]);
         mysqli_stmt_execute($statement);
@@ -17,7 +17,8 @@
         $objectArray =[];
         $assocArray = array();
         while (mysqli_stmt_fetch($statement)) {
-            echo "<h1>$title</h1>";
+
+            echo "<h1>#$article_id-$title</h1>";
             echo "<p>$summary</p>";
             echo "<br>";
             syslog(LOG_INFO, "retrieved $title,$created_datetime");  

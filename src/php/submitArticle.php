@@ -45,12 +45,12 @@
             if($result){
               $data = $select_statement->get_result();
               $row = $data->fetch_assoc();
-              echo "row data : ",var_dump($row),$row['id'];
+              echo "<br>","row data : ",var_dump($row),$row['id'];
               $article_id = $row['id'];
               $insert_statement = $mysqli->prepare("insert into blog_images(uid,image_type,article_id,description,data) values (?,?,?,?,?)");
               $insert_statement->bind_param('sssss',$image_uid,$image_type,$article_id,$description,$contents);
               $insert_statement->execute();
-              echo "affected rows: ",$insert_statement->affected_rows;
+              echo "<br>","affected rows: ",$insert_statement->affected_rows;
             }
         }
 

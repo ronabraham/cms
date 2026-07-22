@@ -1,3 +1,7 @@
+<?php
+    session_start();
+    retrieve_article_range();
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en-US">
 <?php
@@ -10,54 +14,61 @@
 		public $created_datetime;
 		public $summary;
 		public $detailed;
+		public $imageDescription;
+		public $imageData;
 	};
 
 	function retrieve_article_range() {
-    $link_main = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
-        $id_array = ["4","6","19","21"];
-        $statement = mysqli_prepare($link_main,"select id,title,created_datetime,summary,detailed from blog_articles where id in (?,?,?,?)");  
+    	$link = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
+    	$id_array = ["34","35","36","37"];
+    	$statement = mysqli_prepare($link,"select t1.id,t1.title,t1.summary,t2.image_id,t2.description,t2.data from blog_articles as t1 left join blog_images as t2 on t1.id = t2.article_id where t1.id in (?,?,?,?)");
         mysqli_stmt_bind_param($statement,"ssss",$id_array[0],$id_array[1],$id_array[2],$id_array[3]);
         mysqli_stmt_execute($statement);
-        mysqli_stmt_bind_result($statement,$article_id,$title,$created_datetime,$summary,$detailed);
+        mysqli_stmt_bind_result($statement,$article_id,$title,$summary,$image_id,$image_description,$image_data);
         $assocArray = array();
         while (mysqli_stmt_fetch($statement)) {
-  /*          echo "<h1>$title</h1>";
-            echo "<p>$summary</p>";
-            echo "<br>";
-            */
 
            	syslog(LOG_INFO, "retrieved $article_id,$title,$created_datetime");  
             $object = new stdClass();
             $object->title = $title;
             $object->summary = $summary;
+            $object->imageDescription = $image_description;
+            $object->imageData = $image_data;
             $assocArray[$article_id] = $object;
         }
-        return $assocArray;
-
+        $_SESSION['postData']=$assocArray;
 	}
+
+	// function retrieve_article_range_v0() {
+    // $link_main = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
+    //     $id_array = ["4","34","19","21"];
+    //     $statement = mysqli_prepare($link_main,"select id,title,created_datetime,summary,detailed from blog_articles where id in (?,?,?,?)");  
+    //     mysqli_stmt_bind_param($statement,"ssss",$id_array[0],$id_array[1],$id_array[2],$id_array[3]);
+    //     mysqli_stmt_execute($statement);
+    //     mysqli_stmt_bind_result($statement,$article_id,$title,$created_datetime,$summary,$detailed);
+    //     $assocArray = array();
+    //     while (mysqli_stmt_fetch($statement)) {
+
+    //        	syslog(LOG_INFO, "retrieved $article_id,$title,$created_datetime");  
+    //         $object = new stdClass();
+    //         $object->title = $title;
+    //         $object->summary = $summary;
+    //         $assocArray[$article_id] = $object;
+    //     }
+    //     $_SESSION['postData']=$assocArray;
+	// }
+
     function retrieve_article($id) {
     	
-    	$objectArray = retrieve_article_range();
+    	$objectArray = $_SESSION['postData'];
     	$article = new Article;
  	    $article->title = $objectArray[$id]->title;
-	    $article->summary = $objectArray[$id]->summary;		
+	    $article->summary = $objectArray[$id]->summary;
+	   	$article->imageData = $objectArray[$id]->imageDescription;		
+	    $article->imageData = $objectArray[$id]->imageData;		
     	return $article;
-    	
-    	
-    	/*$article = new Article;
-    	$link = mysqli_connect("localhost:3306", "test", "test", "cms0_1");
-	    $statement = mysqli_prepare($link,"select title,created_datetime,summary,detailed from blog_articles where id = ?");
-	    mysqli_stmt_bind_param($statement,"s",$id);
-	    mysqli_stmt_execute($statement);
-	    mysqli_stmt_bind_result($statement,$title,$created_datetime,$summary,$detailed);
-	    mysqli_stmt_fetch($statement);
-	    syslog(LOG_INFO, "retrieved $title,$created_datetime");
-	    $article->title = $title;
-	    $article->summary = $summary;
-	    mysqli_close($link);
-	    return $article;
-	    */
-	    
+	
+    
     }
 ?>
 <head>
@@ -221,16 +232,19 @@
 									<div class="row">
 										<div class="col-md-6 mb-0">
 											<a href="differentlyabled.html" class="entry-image">
-												<img src="files/images/blog/lists/1.jpg" alt="Image">
+												<?php
+													$article = retrieve_article(36);
+													echo '<img src="data:image/jpeg;base64,'.base64_encode($article->imageData).'"/>';
+
+												?>
 											</a>
 										</div>
 										<div class="col-md-6">
 											<div class="entry-title mt-lg-0 mt-3">
 												<!--<div class="entry-categories"><a href="blog-categories.html"> Update - World</a></div> -->
 												<h3><a href="differentlyabled.html" class="color-underline stretched-link">
-
 												<?php
-													$article = retrieve_article(4);
+													$article = retrieve_article(36);
 													echo "$article->title";
 												?>
 											</a></h3>
@@ -242,7 +256,7 @@
 											</div>
 											<div class="entry-content">
 												<?php
-													$article = retrieve_article(4);
+													$article = retrieve_article(36);
 												echo "<p>$article->summary</p>";
 												?>
 											</div>
@@ -254,13 +268,22 @@
 									<div class="row">
 										<div class="col-md-6 mb-0">
 											<a href="tailoring.html" class="entry-image">
-												<img src="files/images/blog/lists/2.jpg" alt="Image">
+												<?php
+													$article = retrieve_article(34);
+													echo '<img src="data:image/jpeg;base64,'.base64_encode($article->imageData).'"/>';
+
+												?>
 											</a>
 										</div>
 										<div class="col-md-6">
 											<div class="entry-title mt-lg-0 mt-3">
 												<!--<div class="entry-categories"><a href="blog-categories.html">Food</a></div> -->
-												<h3><a href="tailoring.html" class="color-underline stretched-link">Tailoring as an Alternate Source of Income</a></h3>
+												<h3><a href="tailoring.html" class="color-underline stretched-link">												<?php
+														$article = retrieve_article(34);
+														echo "$article->title";
+													?>
+													</a>
+												</h3>
 											</div>
 											<div class="entry-meta">
 												<ul>
@@ -268,7 +291,11 @@
 												</ul>
 											</div>
 											<div class="entry-content">
-												<p>Considering the unemployment crisis that is raging in the country, it is always wise for the rural and semi-urban folk to pick up a skill that augments the income from the regular day job. Tailoring is a wise option for those adept at working with needle and cloth. A source of employment that they can work from home, at leisure and with dedication. Working with an established brand is not essential , though it helps.</p>
+
+												<?php
+													$article = retrieve_article(34);
+													echo "<p>",$article->summary,"</p>";
+												?>
 											</div>
 										</div>
 									</div>
@@ -278,13 +305,22 @@
 									<div class="row">
 										<div class="col-md-6 mb-0">
 											<a href="community-kitchens.html" class="entry-image">
-												<img src="files/images/blog/lists/3.jpg" alt="Image">
+												<?php
+													$article = retrieve_article(37);
+													echo '<img src="data:image/jpeg;base64,'.base64_encode($article->imageData).'"/>';
+
+												?>
 											</a>
 										</div>
 										<div class="col-md-6">
 											<div class="entry-title mt-lg-0 mt-3">
 												<!-- <div class="entry-categories"><a href="blog-categories.html">Tech</a></div> -->
-												<h3><a href="community-kitchens.html" class="color-underline stretched-link">Community Kitchens - A Case Study in Class Mergers</a></h3>
+												<h3><a href="community-kitchens.html" class="color-underline stretched-link">
+													<?php
+														$article = retrieve_article(37);
+														echo "$article->title";
+													?>
+											</a></h3>
 											</div>
 											<div class="entry-meta">
 												<ul>
@@ -292,7 +328,10 @@
 												</ul>
 											</div>
 											<div class="entry-content">
-												<p>India is a country synonymous with various caste equations, stretching across all religions. The founding fathers of India had a dream to build a casteless society , and no one epitomises the dream of such a unified India than the father of the Indian constitution Dr. B R Ambedkar.</p>
+												<?php
+													$article = retrieve_article(37);
+													echo "<p>",$article->summary,"</p>";
+												?>
 											</div>
 										</div>
 									</div>
@@ -425,4 +464,7 @@
 	</script>
 
 </body>
+<?php
+	unset( $_SESSION['postData']);
+?>
 </html>
